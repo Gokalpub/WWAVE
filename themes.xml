@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.WaveClean" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:statusBarColor">#060b14</item>
+        <item name="android:navigationBarColor">#080e1a</item>
+    </style>
+</resources>

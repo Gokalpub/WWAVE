@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#060b14" />
+  <title>WaveClean — Akustik Hoparlör & Ses Temizleyici</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
+    body { font-family: 'Inter', system-ui, sans-serif; overflow-x: hidden; }
+    @keyframes rippleGlow {
+      0% { transform: scale(0.92); opacity: 0.75; }
+      50% { transform: scale(1.12); opacity: 0.2; }
+      100% { transform: scale(0.92); opacity: 0.75; }
+    }
+    .ripple-glow { animation: rippleGlow 2s infinite ease-in-out; }
+    .glass-card {
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(56, 189, 248, 0.25); border-radius: 9999px; }
+  </style>
+</head>
+<body class="bg-slate-100 dark:bg-[#060b14] text-slate-900 dark:text-slate-100 min-h-screen flex flex-col items-center justify-start transition-colors duration-300">
+
+  <!-- Mobile App Shell Wrapper -->
+  <div class="w-full max-w-md min-h-screen flex flex-col bg-slate-50 dark:bg-[#080e1a] sm:shadow-2xl sm:border-x border-slate-200/80 dark:border-slate-800/70 relative pb-24">
+
+    <!-- Ambient Top Gradient Glow -->
+    <div class="pointer-events-none absolute top-0 inset-x-0 h-64 bg-gradient-to-b from-cyan-500/15 via-sky-500/5 to-transparent"></div>
+
+    <!-- Clean Consumer Top Header -->
+    <header class="sticky top-0 z-30 glass-card bg-white/80 dark:bg-[#080e1a]/80 border-b border-slate-200/70 dark:border-slate-800/70 px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-cyan-500 via-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-cyan-500/30">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="font-extrabold text-base tracking-tight leading-none">WaveClean</h1>
+          <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400">Akustik Su & Toz Temizleyici</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="px-2.5 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/25 flex items-center gap-1.5">
+          <span id="statusDot" class="w-2 h-2 rounded-full bg-cyan-400"></span>
+          <span id="statActiveFreq" class="text-xs font-extrabold text-cyan-600 dark:text-cyan-400">165 Hz</span>
+        </div>
+        <button id="btnThemeToggle" onclick="toggleTheme()" title="Tema Değiştir" class="p-2 rounded-xl bg-slate-200/70 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:scale-105 transition">
+          <svg class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m8.66-13.66l-.7.7M4.04 19.96l-.7.7M21 12h-1M4 12H3m16.96 7.96l-.7-.7M4.74 4.74l-.7-.7M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+          </svg>
+          <svg class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 px-4 pt-3 space-y-4 relative z-10">
+
+      <!-- ========================================================= -->
+      <!-- TAB 1: SU & TOZ ÇIKARMA (MAIN EJECTOR)                    -->
+      <!-- ========================================================= -->
+      <section id="tab-eject" class="space-y-4">
+
+        <!-- Hero Acoustic Core Card -->
+        <div class="relative rounded-3xl bg-gradient-to-b from-slate-900 via-[#0b1528] to-[#070d19] text-white p-5 shadow-xl border border-slate-800/90 overflow-hidden">
+          <canvas id="ejectWaveCanvas" width="420" height="270" class="absolute inset-0 w-full h-full object-cover opacity-85 pointer-events-none"></canvas>
+
+          <div class="relative z-10 flex items-center justify-between text-xs mb-2">
+            <span id="badgeCurrentMode" class="px-2.5 py-1 rounded-full bg-cyan-500/20 border border-cyan-400/30 text-cyan-300 font-bold">💧 165 Hz Su Tahliye</span>
+            <span id="lblTimerRemaining" class="font-mono font-semibold text-slate-300 bg-slate-900/70 px-2.5 py-1 rounded-full border border-slate-700/70">00:30</span>
+          </div>
+
+          <!-- Center Circular Progress & Power Core -->
+          <div class="relative z-10 flex flex-col items-center justify-center my-3">
+            <div class="relative w-44 h-44 flex items-center justify-center">
+              <div id="ejectPulseHalo" class="w-44 h-44 rounded-full bg-cyan-400/20 border border-cyan-300/40 hidden ripple-glow absolute"></div>
+
+              <!-- SVG Circular Progress Ring -->
+              <svg class="w-44 h-44 -rotate-90 transform absolute inset-0 pointer-events-none" viewBox="0 0 160 160">
+                <circle cx="80" cy="80" r="70" stroke="rgba(255,255,255,0.08)" stroke-width="8" fill="transparent" />
+                <circle id="svgProgressCircle" cx="80" cy="80" r="70" stroke="url(#cyanGrad)" stroke-width="8" stroke-dasharray="439.8" stroke-dashoffset="439.8" stroke-linecap="round" fill="transparent" class="transition-all duration-300" />
+                <defs>
+                  <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#22d3ee" />
+                    <stop offset="100%" stop-color="#3b82f6" />
+                  </linearGradient>
+                </defs>
+              </svg>
+
+              <button id="btnStartEject" onclick="toggleWaterEjectCycle()" class="w-32 h-32 rounded-full bg-gradient-to-tr from-cyan-500 via-sky-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-2xl shadow-cyan-500/40 flex flex-col items-center justify-center transition transform active:scale-95 border-4 border-white/15">
+                <span id="lblEjectPercent" class="text-2xl font-black tracking-tight">BAŞLAT</span>
+                <span id="lblEjectSub" class="text-[11px] font-semibold text-cyan-100 mt-0.5">Dokun & Temizle</span>
+              </button>
+            </div>
+
+            <div id="lblLiveFreqReadout" class="mt-2 text-xs font-bold text-cyan-300 tracking-wide">Hazır • 165 Hz Sinüs Dalgası</div>
+            <p class="text-[11px] text-slate-400 text-center max-w-[260px] mt-0.5">Telefonu ekran aşağı bakacak şekilde tutun ve sesi sonuna kadar açın.</p>
+          </div>
+
+          <!-- Speaker Output Target Pills Inside Hero -->
+          <div class="relative z-10 grid grid-cols-3 gap-1.5 bg-slate-950/70 p-1.5 rounded-2xl border border-slate-800/80">
+            <button id="btnTargetMain" onclick="setSpeakerTarget('main')" class="spk-target-btn text-xs font-bold py-2 px-2 rounded-xl bg-cyan-500 text-slate-950 shadow transition">📱 Alt Hoparlör</button>
+            <button id="btnTargetEar" onclick="setSpeakerTarget('earpiece')" class="spk-target-btn text-xs font-semibold py-2 px-2 rounded-xl text-slate-300 hover:text-white transition">📞 Üst Ahize</button>
+            <button id="btnTargetHead" onclick="setSpeakerTarget('headphones')" class="spk-target-btn text-xs font-semibold py-2 px-2 rounded-xl text-slate-300 hover:text-white transition">🎧 Kulaklık</button>
+          </div>
+        </div>
+
+        <!-- 4 Cleaning Mode Cards (2x2 Mobile Grid) -->
+        <div>
+          <div class="flex items-center justify-between mb-2 px-1">
+            <h2 class="text-xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">Temizlik Programları</h2>
+            <span class="text-[11px] font-semibold text-cyan-600 dark:text-cyan-400">4 Akustik Mod</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <button id="cardModeStandard" onclick="selectCleaningMode('standard')" class="text-left p-3.5 rounded-2xl border-2 border-cyan-500 bg-cyan-500/10 transition flex flex-col justify-between h-28">
+              <div class="flex items-center justify-between">
+                <span class="w-8 h-8 rounded-xl bg-cyan-500/20 text-cyan-500 flex items-center justify-center text-base">💧</span>
+                <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-cyan-500 text-slate-950">165 Hz</span>
+              </div>
+              <div>
+                <div class="font-bold text-xs sm:text-sm">Su Tahliye</div>
+                <div class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1">Hızlı su damlası atma</div>
+              </div>
+            </button>
+
+            <button id="cardModeSweep" onclick="selectCleaningMode('sweep')" class="text-left p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 hover:border-cyan-500/50 transition flex flex-col justify-between h-28">
+              <div class="flex items-center justify-between">
+                <span class="w-8 h-8 rounded-xl bg-sky-500/15 text-sky-400 flex items-center justify-center text-base">🌊</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">150-220 Hz</span>
+              </div>
+              <div>
+                <div class="font-bold text-xs sm:text-sm">Derin Tarama</div>
+                <div class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1">Dalgalı derin temizlik</div>
+              </div>
+            </button>
+
+            <button id="cardModeTurbo" onclick="selectCleaningMode('turbo')" class="text-left p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 hover:border-cyan-500/50 transition flex flex-col justify-between h-28">
+              <div class="flex items-center justify-between">
+                <span class="w-8 h-8 rounded-xl bg-indigo-500/15 text-indigo-400 flex items-center justify-center text-base">⚡</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400">180 Hz</span>
+              </div>
+              <div>
+                <div class="font-bold text-xs sm:text-sm">Turbo Güç</div>
+                <div class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1">Yoğun sıvı ve boğuk ses</div>
+              </div>
+            </button>
+
+            <button id="cardModeDust" onclick="selectCleaningMode('dust')" class="text-left p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 hover:border-cyan-500/50 transition flex flex-col justify-between h-28">
+              <div class="flex items-center justify-between">
+                <span class="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center text-base">🌪️</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400">300 Hz</span>
+              </div>
+              <div>
+                <div class="font-bold text-xs sm:text-sm">Toz & Izgara</div>
+                <div class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1">Kare dalga toz silkme</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Power & Haptic Controls Card -->
+        <div class="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 space-y-3 shadow-sm">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold text-slate-700 dark:text-slate-200">🔊 Akustik Basınç Seviyesi</span>
+            <span id="valEjectVolume" class="font-extrabold text-cyan-500">100%</span>
+          </div>
+          <input id="rngEjectVolume" type="range" min="20" max="100" value="100" oninput="updateEjectVolume()" class="w-full accent-cyan-500" />
+          <div class="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-800/80 text-xs">
+            <span class="text-slate-500 dark:text-slate-400 font-medium">📳 Darbeli Motor Titreşimi (Haptic)</span>
+            <button id="btnVibToggle" onclick="toggleVibrationMode()" class="px-3 py-1 rounded-lg bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 font-bold">Açık ✓</button>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ========================================================= -->
+      <!-- TAB 2: MANUEL FREKANS STÜDYOSU (20 Hz - 20.000 Hz)        -->
+      <!-- ========================================================= -->
+      <section id="tab-freq" class="hidden space-y-4">
+        <div class="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm space-y-5">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="font-extrabold text-base">Hassas Frekans Üretici</h2>
+              <p class="text-xs text-slate-500 dark:text-slate-400">20 Hz – 20.000 Hz akustik osilatör</p>
+            </div>
+            <button id="btnManualToneToggle" onclick="toggleManualTone()" class="px-4 py-2.5 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-extrabold text-xs shadow-lg shadow-cyan-500/25 transition">
+              ▶ Sesi Başlat
+            </button>
+          </div>
+
+          <!-- Digital Readout Box -->
+          <div class="p-5 rounded-2xl bg-slate-950 text-white border border-slate-800 flex flex-col items-center space-y-4">
+            <div class="flex items-baseline gap-1.5">
+              <span id="lblManualHzBig" class="text-5xl font-black text-cyan-400 tracking-tight font-mono">165</span>
+              <span class="text-base font-bold text-slate-400">Hz</span>
+            </div>
+
+            <div class="grid grid-cols-4 gap-2 w-full">
+              <button id="btnFreqMinus10" onclick="stepManualFreq(-10)" class="py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-bold">-10 Hz</button>
+              <button id="btnFreqMinus1" onclick="stepManualFreq(-1)" class="py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-bold">-1 Hz</button>
+              <button id="btnFreqPlus1" onclick="stepManualFreq(1)" class="py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-bold">+1 Hz</button>
+              <button id="btnFreqPlus10" onclick="stepManualFreq(10)" class="py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-bold">+10 Hz</button>
+            </div>
+
+            <input id="rngManualFreq" type="range" min="20" max="2000" value="165" oninput="onManualFreqSliderChange()" class="w-full accent-cyan-400" />
+            <div class="flex justify-between w-full text-[10px] text-slate-400 font-medium">
+              <span>20 Hz</span>
+              <span>165 Hz (Su)</span>
+              <span>500 Hz</span>
+              <span>2000 Hz</span>
+            </div>
+          </div>
+
+          <!-- Waveform Selector -->
+          <div class="space-y-2">
+            <span class="text-xs font-bold text-slate-500 dark:text-slate-400 block">Dalga Formu</span>
+            <div class="grid grid-cols-4 gap-2">
+              <button id="btnWaveSine" onclick="setWaveType('sine')" class="wave-type-btn py-2.5 px-2 rounded-xl text-xs font-bold bg-cyan-500 text-slate-950">〰️ Sinüs</button>
+              <button id="btnWaveSquare" onclick="setWaveType('square')" class="wave-type-btn py-2.5 px-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800">⊓ Kare</button>
+              <button id="btnWaveSaw" onclick="setWaveType('sawtooth')" class="wave-type-btn py-2.5 px-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800">⊿ Testere</button>
+              <button id="btnWaveTri" onclick="setWaveType('triangle')" class="wave-type-btn py-2.5 px-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800">△ Üçgen</button>
+            </div>
+          </div>
+
+          <!-- Quick Presets -->
+          <div class="space-y-2">
+            <span class="text-xs font-bold text-slate-500 dark:text-slate-400 block">Hızlı Frekans Ön Ayarları</span>
+            <div class="grid grid-cols-3 gap-2">
+              <button id="btnPreset140" onclick="setManualFreqValue(140)" class="py-2 px-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-cyan-500/15 text-xs font-semibold">140 Hz Bas</button>
+              <button id="btnPreset165" onclick="setManualFreqValue(165)" class="py-2 px-2.5 rounded-xl bg-cyan-500/15 text-cyan-500 text-xs font-bold">165 Hz Su</button>
+              <button id="btnPreset180" onclick="setManualFreqValue(180)" class="py-2 px-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-cyan-500/15 text-xs font-semibold">180 Hz Güç</button>
+              <button id="btnPreset300" onclick="setManualFreqValue(300)" class="py-2 px-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-cyan-500/15 text-xs font-semibold">300 Hz Toz</button>
+              <button id="btnPreset432" onclick="setManualFreqValue(432)" class="py-2 px-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-cyan-500/15 text-xs font-semibold">432 Hz Saf</button>
+              <button id="btnPreset1000" onclick="setManualFreqValue(1000)" class="py-2 px-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-cyan-500/15 text-xs font-semibold">1000 Hz Test</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================= -->
+      <!-- TAB 3: STEREO (SAĞ/SOL) & AKUSTİK SAĞLIK TESTİ            -->
+      <!-- ========================================================= -->
+      <section id="tab-test" class="hidden space-y-4">
+
+        <!-- Stereo L/R Card -->
+        <div class="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm space-y-4">
+          <div>
+            <h2 class="font-extrabold text-base">🎧 Sağ & Sol Stereo Kanal Testi</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Hangi hoparlör veya kulaklık kanalının kısık ses verdiğini kontrol edin</p>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2.5">
+            <button id="btnStereoLeft" onclick="playStereoCheck(-1)" class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 hover:border-cyan-500 flex flex-col items-center gap-2 transition">
+              <span class="w-11 h-11 rounded-2xl bg-cyan-500/15 text-cyan-500 flex items-center justify-center font-black text-sm">L</span>
+              <span class="text-xs font-bold">Sol Kanal</span>
+            </button>
+            <button id="btnStereoBoth" onclick="playStereoCheck(0)" class="p-4 rounded-2xl border-2 border-cyan-500 bg-cyan-500/10 flex flex-col items-center gap-2 transition">
+              <span class="w-11 h-11 rounded-2xl bg-cyan-500 text-slate-950 flex items-center justify-center font-black text-xs">L + R</span>
+              <span class="text-xs font-bold">Stereo İkisi</span>
+            </button>
+            <button id="btnStereoRight" onclick="playStereoCheck(1)" class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 hover:border-cyan-500 flex flex-col items-center gap-2 transition">
+              <span class="w-11 h-11 rounded-2xl bg-cyan-500/15 text-cyan-500 flex items-center justify-center font-black text-sm">R</span>
+              <span class="text-xs font-bold">Sağ Kanal</span>
+            </button>
+          </div>
+
+          <div id="lblStereoStatus" class="text-center text-xs font-semibold text-cyan-600 dark:text-cyan-400 py-2.5 bg-cyan-500/10 rounded-xl">
+            Test etmek için bir kanala dokunun
+          </div>
+        </div>
+
+        <!-- 3-Point Clarity Check -->
+        <div class="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm space-y-3">
+          <h3 class="font-extrabold text-base">🩺 3 Aşamalı Ses Netlik Kontrolü</h3>
+          <div class="space-y-2">
+            <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 flex items-center justify-between">
+              <div>
+                <div class="font-bold text-xs sm:text-sm">1. Derin Bas Testi (250 Hz)</div>
+                <div class="text-[11px] text-slate-400">Membran cızırtı ve titreşim kontrolü</div>
+              </div>
+              <button id="btnTest250" onclick="playClarityTone(250, '250 Hz Bas Testi')" class="px-3.5 py-2 rounded-xl bg-cyan-500 text-slate-950 text-xs font-extrabold">Dinle</button>
+            </div>
+
+            <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 flex items-center justify-between">
+              <div>
+                <div class="font-bold text-xs sm:text-sm">2. Vokal & Konuşma (1000 Hz)</div>
+                <div class="text-[11px] text-slate-400">Ses netliği ve orta frekans dengesi</div>
+              </div>
+              <button id="btnTest1000" onclick="playClarityTone(1000, '1000 Hz Vokal Testi')" class="px-3.5 py-2 rounded-xl bg-cyan-500 text-slate-950 text-xs font-extrabold">Dinle</button>
+            </div>
+
+            <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 flex items-center justify-between">
+              <div>
+                <div class="font-bold text-xs sm:text-sm">3. Kristal Tiz Testi (3000 Hz)</div>
+                <div class="text-[11px] text-slate-400">Su kaynaklı boğukluk kontrolü</div>
+              </div>
+              <button id="btnTest3000" onclick="playClarityTone(3000, '3000 Hz Tiz Testi')" class="px-3.5 py-2 rounded-xl bg-cyan-500 text-slate-950 text-xs font-extrabold">Dinle</button>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ========================================================= -->
+      <!-- TAB 4: ACİL SU KURTARMA REHBERİ & TEMİZLİK GEÇMİŞİ        -->
+      <!-- ========================================================= -->
+      <section id="tab-guide" class="hidden space-y-4">
+
+        <!-- Water Rescue Guide -->
+        <div class="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm space-y-3">
+          <h2 class="font-extrabold text-base">🛡️ Suya Düşen Telefon Kurtarma Rehberi</h2>
+          <div class="space-y-2 text-xs">
+            <div class="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-start gap-2.5">
+              <span class="text-base">✅</span>
+              <div>
+                <span class="font-bold text-emerald-600 dark:text-emerald-400 block">Hoparlör Izgarasını Aşağı Çevirin</span>
+                <span class="text-slate-600 dark:text-slate-300">Yerçekimi ve 165 Hz akustik dalgaların suyu dışarı itmesi için telefonu dik veya yüzüstü tutun.</span>
+              </div>
+            </div>
+            <div class="p-3 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-start gap-2.5">
+              <span class="text-base">⚠️</span>
+              <div>
+                <span class="font-bold text-rose-600 dark:text-rose-400 block">Pirinç İçine Koymayın & Sıcak Hava Tutmayın</span>
+                <span class="text-slate-600 dark:text-slate-300">Pirinç tozu hoparlör ızgarasını tıkar, fön makinesi ise su geçirmez contaları eritir.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cleaning History Log -->
+        <div class="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="font-extrabold text-base">🕒 Son Temizlik Kayıtları</h3>
+            <button id="btnClearCleanLog" onclick="clearCleaningLogs()" class="text-xs font-semibold text-rose-500 hover:underline">Temizle</button>
+          </div>
+          <div id="cleanHistoryList" class="space-y-2"></div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- Sleek Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md z-30 glass-card bg-white/90 dark:bg-[#080e1a]/90 border-t border-slate-200/80 dark:border-slate-800/80 px-3 py-2">
+      <div class="grid grid-cols-4 gap-1">
+        <button id="navBtnEject" onclick="switchTab('eject')" class="nav-tab-btn flex flex-col items-center justify-center py-1.5 rounded-2xl text-cyan-600 dark:text-cyan-400 font-bold bg-cyan-500/10">
+          <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+          <span class="text-[11px]">Su Çıkar</span>
+        </button>
+        <button id="navBtnFreq" onclick="switchTab('freq')" class="nav-tab-btn flex flex-col items-center justify-center py-1.5 rounded-2xl text-slate-500 dark:text-slate-400 font-medium">
+          <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+          <span class="text-[11px]">Frekans</span>
+        </button>
+        <button id="navBtnTest" onclick="switchTab('test')" class="nav-tab-btn flex flex-col items-center justify-center py-1.5 rounded-2xl text-slate-500 dark:text-slate-400 font-medium">
+          <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>
+          <span class="text-[11px]">Ses Testi</span>
+        </button>
+        <button id="navBtnGuide" onclick="switchTab('guide')" class="nav-tab-btn flex flex-col items-center justify-center py-1.5 rounded-2xl text-slate-500 dark:text-slate-400 font-medium">
+          <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          <span class="text-[11px]">Rehber</span>
+        </button>
+      </div>
+    </nav>
+
+  </div>
+
+  <!-- Completion Modal (Consumer Clean UI - No Ad Badges) -->
+  <div id="modalCycleComplete" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl">
+      <div class="w-16 h-16 rounded-3xl bg-emerald-500/15 text-emerald-500 flex items-center justify-center text-3xl mx-auto">💧</div>
+      <div>
+        <h3 class="font-extrabold text-lg">Temizlik Tamamlandı!</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Hoparlör ızgarasındaki su damlacıklarını kuru bir bezle silin ve şimdi ses netliğini test edin.</p>
+      </div>
+      <div class="space-y-2 pt-1">
+        <button id="btnGoToSoundTest" onclick="closeCompleteAndGoTest()" class="w-full py-3 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-extrabold text-xs transition">
+          🔊 Sağ / Sol Hoparlör Testi Yap
+        </button>
+        <button id="btnCloseCompleteModal" onclick="closeCompleteModal()" class="w-full py-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold text-xs transition">
+          Tamam
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastBox" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 hidden px-4 py-2.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold shadow-xl">
+    İşlem tamamlandı
+  </div>
+
+  <script>
+    // =========================================================================
+    // STATE & NATIVE ANDROID ADMOB BRIDGE (SILENT CONSUMER INTEGRATION)
+    // =========================================================================
+    const state = {
+      activeTab: 'eject',
+      cleaningMode: 'standard',
+      speakerTarget: 'main',
+      volume: 1.0,
+      vibrationEnabled: true,
+      isEjecting: false,
+      ejectProgress: 0,
+      ejectTimer: null,
+      waveAnimRaf: null,
+      manualPlaying: false,
+      manualFreq: 165,
+      manualWaveType: 'sine',
+      logs: [
+        { id: '1', mode: '165 Hz Su Tahliye', time: 'Bugün • 30 sn', status: 'Tamamlandı' }
+      ]
+    };
+
+    // Official AdMob Configuration injected from user's AdMob Console
+    const ADMOB_PRODUCTION_IDS = {
+      appId: 'ca-app-pub-8819233961749663~1707868640',
+      rewardedUnitId: 'ca-app-pub-8819233961749663/5113916136'
+    };
+
+    // Silent bridge to Native Android AdMob SDK (MobileAds) — Every action triggers AdMob
+    function notifyNativeAdMob(action, detail) {
+      try {
+        if (window.AndroidAdMob) {
+          if (typeof window.AndroidAdMob.triggerAdOnAction === 'function') {
+            window.AndroidAdMob.triggerAdOnAction((action || 'action') + ':' + (detail || ''));
+          } else if (typeof window.AndroidAdMob.showRewarded === 'function') {
+            window.AndroidAdMob.showRewarded(detail || action || 'action');
+          }
+        }
+      } catch (e) {}
+    }
+
+    // Callback invoked by Android MainActivity when user finishes watching the Rewarded Ad
+    window.onAdMobRewardGranted = function(modeName) {
+      if (modeName && modeName !== 'cycle_complete') {
+        if (!state.isEjecting) {
+          startWaterEjectCycle();
+        }
+      }
+    };
+
+    let audioCtx = null;
+    let activeOsc = null;
+    let activeGain = null;
+    let activePanner = null;
+    let stopTimeout = null;
+
+    function ensureAudioContext() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          audioCtx = new AudioContextClass();
+        }
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function stopAllAudio() {
+      if (stopTimeout) {
+        clearTimeout(stopTimeout);
+        stopTimeout = null;
+      }
+      if (activeOsc) {
+        try {
+          activeOsc.stop();
+          activeOsc.disconnect();
+        } catch (e) {}
+        activeOsc = null;
+      }
+      if (activeGain) {
+        try { activeGain.disconnect(); } catch (e) {}
+        activeGain = null;
+      }
+      if (activePanner) {
+        try { activePanner.disconnect(); } catch (e) {}
+        activePanner = null;
+      }
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const box = document.getElementById('toastBox');
+      if (!box) return;
+      box.textContent = msg;
+      box.classList.remove('hidden');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => box.classList.add('hidden'), 2400);
+    }
+
+    function toggleTheme() {
+      document.documentElement.classList.toggle('dark');
+      showToast(document.documentElement.classList.contains('dark') ? 'Koyu görünüm' : 'Açık görünüm');
+    }
+
+    function switchTab(tabId) {
+      if (state.activeTab !== tabId) notifyNativeAdMob('tab_switch', tabId);
+      state.activeTab = tabId;
+      ['eject', 'freq', 'test', 'guide'].forEach(t => {
+        const sec = document.getElementById('tab-' + t);
+        if (sec) {
+          if (t === tabId) sec.classList.remove('hidden');
+          else sec.classList.add('hidden');
+        }
+      });
+
+      const navMap = {
+        eject: 'navBtnEject',
+        freq: 'navBtnFreq',
+        test: 'navBtnTest',
+        guide: 'navBtnGuide'
+      };
+      Object.entries(navMap).forEach(([k, id]) => {
+        const btn = document.getElementById(id);
+        if (!btn) return;
+        if (k === tabId) {
+          btn.className = 'nav-tab-btn flex flex-col items-center justify-center py-1.5 rounded-2xl text-cyan-600 dark:text-cyan-400 font-bold bg-cyan-500/10';
+        } else {
+          btn.className = 'nav-tab-btn flex flex-col items-center justify-center py-1.5 rounded-2xl text-slate-500 dark:text-slate-400 font-medium';
+        }
+      });
+
+      if (tabId !== 'eject' && state.isEjecting) {
+        stopWaterEjectCycle(false);
+      }
+      if (tabId !== 'freq' && state.manualPlaying) {
+        stopManualTone();
+      }
+      if (tabId === 'guide') {
+        renderCleanHistory();
+      }
+    }
+
+    // =========================================================================
+    // TAB 1: WATER & DUST EJECT ENGINE
+    // =========================================================================
+    function selectCleaningMode(mode) {
+      state.cleaningMode = mode;
+      notifyNativeAdMob('select_mode', mode);
+
+      const cards = {
+        standard: 'cardModeStandard',
+        sweep: 'cardModeSweep',
+        turbo: 'cardModeTurbo',
+        dust: 'cardModeDust'
+      };
+      Object.entries(cards).forEach(([k, id]) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (k === mode) {
+          el.className = 'text-left p-3.5 rounded-2xl border-2 border-cyan-500 bg-cyan-500/10 transition flex flex-col justify-between h-28';
+        } else {
+          el.className = 'text-left p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 hover:border-cyan-500/50 transition flex flex-col justify-between h-28';
+        }
+      });
+
+      const meta = {
+        standard: { badge: '💧 165 Hz Su Tahliye', readout: 'Hazır • 165 Hz Sinüs Dalgası', hz: '165 Hz' },
+        sweep: { badge: '🌊 150–220 Hz Derin Tarama', readout: 'Hazır • 150–220 Hz Akustik Tarama', hz: '150-220 Hz' },
+        turbo: { badge: '⚡ 180 Hz Turbo Güç', readout: 'Hazır • 180 Hz Darbeli Turbo Mod', hz: '180 Hz' },
+        dust: { badge: '🌪️ 300 Hz Toz & Izgara', readout: 'Hazır • 300 Hz Kare Dalga', hz: '300 Hz' }
+      }[mode];
+
+      if (meta) {
+        const b = document.getElementById('badgeCurrentMode');
+        const r = document.getElementById('lblLiveFreqReadout');
+        const s = document.getElementById('statActiveFreq');
+        if (b) b.textContent = meta.badge;
+        if (r) r.textContent = meta.readout;
+        if (s) s.textContent = meta.hz;
+      }
+
+      if (state.isEjecting) {
+        stopWaterEjectCycle(false);
+        startWaterEjectCycle();
+      }
+    }
+
+    function setSpeakerTarget(target) {
+      state.speakerTarget = target;
+      notifyNativeAdMob('speaker_target', target);
+      const map = {
+        main: 'btnTargetMain',
+        earpiece: 'btnTargetEar',
+        headphones: 'btnTargetHead'
+      };
+      Object.entries(map).forEach(([k, id]) => {
+        const b = document.getElementById(id);
+        if (!b) return;
+        if (k === target) {
+          b.className = 'spk-target-btn text-xs font-bold py-2 px-2 rounded-xl bg-cyan-500 text-slate-950 shadow transition';
+        } else {
+          b.className = 'spk-target-btn text-xs font-semibold py-2 px-2 rounded-xl text-slate-300 hover:text-white transition';
+        }
+      });
+      const names = { main: 'Alt Hoparlör', earpiece: 'Üst Ahize', headphones: 'Kulaklık' };
+      showToast('Hedef: ' + (names[target] || 'Alt Hoparlör'));
+    }
+
+    function updateEjectVolume() {
+      const rng = document.getElementById('rngEjectVolume');
+      const lbl = document.getElementById('valEjectVolume');
+      const v = rng ? parseInt(rng.value, 10) : 100;
+      state.volume = v / 100;
+      if (lbl) lbl.textContent = v + '%';
+      if (activeGain && audioCtx) {
+        activeGain.gain.setValueAtTime(state.volume, audioCtx.currentTime);
+      }
+    }
+
+    function toggleVibrationMode() {
+      state.vibrationEnabled = !state.vibrationEnabled;
+      notifyNativeAdMob('vibration_toggle', String(state.vibrationEnabled));
+      const btn = document.getElementById('btnVibToggle');
+      if (btn) btn.textContent = state.vibrationEnabled ? 'Açık ✓' : 'Kapalı ✕';
+    }
+
+    function updateCircularRing(percent) {
+      const circle = document.getElementById('svgProgressCircle');
+      if (!circle) return;
+      const circumference = 439.8;
+      const offset = circumference - (percent / 100) * circumference;
+      circle.style.strokeDashoffset = String(offset);
+    }
+
+    function toggleWaterEjectCycle() {
+      notifyNativeAdMob('eject_button', state.isEjecting ? 'stop' : 'start');
+      if (state.isEjecting) {
+        stopWaterEjectCycle(false);
+      } else {
+        startWaterEjectCycle();
+      }
+    }
+
+    function startWaterEjectCycle() {
+      const ctx = ensureAudioContext();
+      stopAllAudio();
+
+      state.isEjecting = true;
+      state.ejectProgress = 0;
+      updateCircularRing(0);
+
+      const halo = document.getElementById('ejectPulseHalo');
+      const pct = document.getElementById('lblEjectPercent');
+      const sub = document.getElementById('lblEjectSub');
+      const timerEl = document.getElementById('lblTimerRemaining');
+      if (halo) halo.classList.remove('hidden');
+      if (pct) pct.textContent = '0%';
+      if (sub) sub.textContent = '⏹ Durdur';
+      if (timerEl) timerEl.textContent = '00:30';
+
+      if (ctx) {
+        activeOsc = ctx.createOscillator();
+        activeGain = ctx.createGain();
+        activeGain.gain.setValueAtTime(state.volume, ctx.currentTime);
+
+        if (state.cleaningMode === 'standard') {
+          activeOsc.type = 'sine';
+          activeOsc.frequency.setValueAtTime(165, ctx.currentTime);
+        } else if (state.cleaningMode === 'sweep') {
+          activeOsc.type = 'sine';
+          activeOsc.frequency.setValueAtTime(150, ctx.currentTime);
+        } else if (state.cleaningMode === 'turbo') {
+          activeOsc.type = 'sawtooth';
+          activeOsc.frequency.setValueAtTime(180, ctx.currentTime);
+        } else {
+          activeOsc.type = 'square';
+          activeOsc.frequency.setValueAtTime(300, ctx.currentTime);
+        }
+
+        activeOsc.connect(activeGain);
+        activeGain.connect(ctx.destination);
+        activeOsc.start();
+      }
+
+      if (state.ejectTimer) clearInterval(state.ejectTimer);
+      state.ejectTimer = setInterval(() => {
+        state.ejectProgress += 2;
+        if (pct) pct.textContent = state.ejectProgress + '%';
+        updateCircularRing(state.ejectProgress);
+
+        const secLeft = Math.max(0, Math.ceil(30 - (state.ejectProgress * 0.3)));
+        if (timerEl) timerEl.textContent = '00:' + String(secLeft).padStart(2, '0');
+
+        if (activeOsc && audioCtx) {
+          const now = audioCtx.currentTime;
+          if (state.cleaningMode === 'sweep') {
+            const sweepHz = 150 + ((state.ejectProgress * 1.4) % 70);
+            activeOsc.frequency.setValueAtTime(sweepHz, now);
+            const r = document.getElementById('lblLiveFreqReadout');
+            if (r) r.textContent = 'Akustik Tarama • ' + Math.round(sweepHz) + ' Hz';
+          } else if (state.cleaningMode === 'turbo') {
+            const pulseHz = state.ejectProgress % 4 === 0 ? 180 : 168;
+            activeOsc.frequency.setValueAtTime(pulseHz, now);
+          }
+        }
+
+        if (state.vibrationEnabled && navigator.vibrate && state.ejectProgress % 10 === 0) {
+          try { navigator.vibrate(100); } catch (e) {}
+        }
+
+        if (state.ejectProgress >= 100) {
+          stopWaterEjectCycle(true);
+        }
+      }, 300);
+    }
+
+    function stopWaterEjectCycle(completedNaturally) {
+      state.isEjecting = false;
+      if (state.ejectTimer) {
+        clearInterval(state.ejectTimer);
+        state.ejectTimer = null;
+      }
+      stopAllAudio();
+      updateCircularRing(0);
+
+      const halo = document.getElementById('ejectPulseHalo');
+      const pct = document.getElementById('lblEjectPercent');
+      const sub = document.getElementById('lblEjectSub');
+      const timerEl = document.getElementById('lblTimerRemaining');
+      if (halo) halo.classList.add('hidden');
+      if (pct) pct.textContent = 'BAŞLAT';
+      if (sub) sub.textContent = 'Dokun & Temizle';
+      if (timerEl) timerEl.textContent = '00:30';
+
+      if (completedNaturally) {
+        const modeTitleMap = {
+          standard: '165 Hz Su Tahliye',
+          sweep: '150–220 Hz Derin Tarama',
+          turbo: '180 Hz Turbo Güç',
+          dust: '300 Hz Toz & Izgara'
+        };
+        const now = new Date();
+        const tStr = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+        state.logs.unshift({
+          id: String(Date.now()),
+          mode: modeTitleMap[state.cleaningMode] || 'Su Tahliye',
+          time: 'Bugün ' + tStr + ' • 30 sn',
+          status: 'Tamamlandı'
+        });
+        notifyNativeAdMob('interstitial');
+        openCompleteModal();
+      } else {
+        showToast('Temizlik durduruldu');
+      }
+    }
+
+    // Animated Acoustic Waves & Water Droplets Canvas
+    let wavePhase = 0;
+    const droplets = Array.from({ length: 14 }, (_, i) => ({
+      x: (i * 33) % 400,
+      y: (i * 19) % 240,
+      r: 2 + (i % 3),
+      vy: 1.2 + (i % 3) * 0.5
+    }));
+
+    function renderWaveCanvasLoop() {
+      const canvas = document.getElementById('ejectWaveCanvas');
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        const w = canvas.width;
+        const h = canvas.height;
+        ctx.clearRect(0, 0, w, h);
+
+        const amp = state.isEjecting ? 34 * state.volume : 7;
+        const speed = state.isEjecting ? 0.17 : 0.03;
+        wavePhase += speed;
+
+        for (let layer = 0; layer < 3; layer++) {
+          ctx.beginPath();
+          ctx.strokeStyle = layer === 0
+            ? 'rgba(34, 211, 238, 0.65)'
+            : (layer === 1 ? 'rgba(56, 189, 248, 0.35)' : 'rgba(99, 102, 241, 0.25)');
+          ctx.lineWidth = layer === 0 ? 2.5 : 1.8;
+
+          for (let x = 0; x <= w; x += 6) {
+            const y = h / 2 + Math.sin(x * 0.025 + wavePhase + layer * 1.4) * (amp - layer * 5);
+            if (x === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.stroke();
+        }
+
+        if (state.isEjecting) {
+          ctx.fillStyle = 'rgba(103, 232, 249, 0.55)';
+          droplets.forEach(d => {
+            d.y += d.vy * 2.2;
+            if (d.y > h) d.y = 10;
+            ctx.beginPath();
+            ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+            ctx.fill();
+          });
+        }
+      }
+      state.waveAnimRaf = requestAnimationFrame(renderWaveCanvasLoop);
+    }
+
+    // =========================================================================
+    // TAB 2: MANUAL FREQUENCY GENERATOR
+    // =========================================================================
+    function onManualFreqSliderChange() {
+      const rng = document.getElementById('rngManualFreq');
+      const val = rng ? parseInt(rng.value, 10) : 165;
+      setManualFreqValue(val);
+    }
+
+    function stepManualFreq(delta) {
+      const next = Math.max(20, Math.min(20000, state.manualFreq + delta));
+      setManualFreqValue(next);
+    }
+
+    function setManualFreqValue(hz) {
+      state.manualFreq = hz;
+      const big = document.getElementById('lblManualHzBig');
+      const rng = document.getElementById('rngManualFreq');
+      const topStat = document.getElementById('statActiveFreq');
+      if (big) big.textContent = String(hz);
+      if (rng && hz <= 2000) rng.value = String(hz);
+      if (topStat) topStat.textContent = hz + ' Hz';
+
+      if (state.manualPlaying && activeOsc && audioCtx) {
+        activeOsc.frequency.setValueAtTime(hz, audioCtx.currentTime);
+      }
+    }
+
+    function setWaveType(type) {
+      state.manualWaveType = type;
+      notifyNativeAdMob('wave_type', type);
+      const map = {
+        sine: 'btnWaveSine',
+        square: 'btnWaveSquare',
+        sawtooth: 'btnWaveSaw',
+        triangle: 'btnWaveTri'
+      };
+      Object.entries(map).forEach(([k, id]) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (k === type) {
+          el.className = 'wave-type-btn py-2.5 px-2 rounded-xl text-xs font-bold bg-cyan-500 text-slate-950';
+        } else {
+          el.className = 'wave-type-btn py-2.5 px-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800';
+        }
+      });
+      if (state.manualPlaying && activeOsc) {
+        activeOsc.type = type;
+      }
+    }
+
+    function toggleManualTone() {
+      notifyNativeAdMob('manual_tone', state.manualPlaying ? 'stop' : 'start');
+      if (state.manualPlaying) {
+        stopManualTone();
+      } else {
+        startManualTone();
+      }
+    }
+
+    function startManualTone() {
+      const ctx = ensureAudioContext();
+      stopAllAudio();
+      state.manualPlaying = true;
+      const btn = document.getElementById('btnManualToneToggle');
+      if (btn) {
+        btn.textContent = '⏹ Sesi Durdur';
+        btn.className = 'px-4 py-2.5 rounded-2xl bg-rose-500 hover:bg-rose-400 text-white font-extrabold text-xs shadow-lg transition';
+      }
+      if (ctx) {
+        activeOsc = ctx.createOscillator();
+        activeGain = ctx.createGain();
+        activeOsc.type = state.manualWaveType;
+        activeOsc.frequency.setValueAtTime(state.manualFreq, ctx.currentTime);
+        activeGain.gain.setValueAtTime(state.volume, ctx.currentTime);
+        activeOsc.connect(activeGain);
+        activeGain.connect(ctx.destination);
+        activeOsc.start();
+      }
+    }
+
+    function stopManualTone() {
+      state.manualPlaying = false;
+      stopAllAudio();
+      const btn = document.getElementById('btnManualToneToggle');
+      if (btn) {
+        btn.textContent = '▶ Sesi Başlat';
+        btn.className = 'px-4 py-2.5 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-extrabold text-xs shadow-lg shadow-cyan-500/25 transition';
+      }
+    }
+
+    // =========================================================================
+    // TAB 3: STEREO LEFT/RIGHT & CLARITY TEST
+    // =========================================================================
+    function playStereoCheck(panValue) {
+      notifyNativeAdMob('stereo_test', String(panValue));
+      const ctx = ensureAudioContext();
+      stopAllAudio();
+      const lbl = document.getElementById('lblStereoStatus');
+      const names = { '-1': 'SOL Kanal Çalıyor (440 Hz)...', '0': 'SOL + SAĞ Stereo Çalıyor...', '1': 'SAĞ Kanal Çalıyor (440 Hz)...' };
+      if (lbl) lbl.textContent = names[String(panValue)] || 'Test ediliyor...';
+
+      if (ctx) {
+        activeOsc = ctx.createOscillator();
+        activeGain = ctx.createGain();
+        activeOsc.type = 'sine';
+        activeOsc.frequency.setValueAtTime(440, ctx.currentTime);
+        activeGain.gain.setValueAtTime(0.85, ctx.currentTime);
+
+        if (ctx.createStereoPanner) {
+          activePanner = ctx.createStereoPanner();
+          activePanner.pan.setValueAtTime(panValue, ctx.currentTime);
+          activeOsc.connect(activePanner);
+          activePanner.connect(activeGain);
+        } else {
+          activeOsc.connect(activeGain);
+        }
+        activeGain.connect(ctx.destination);
+        activeOsc.start();
+
+        stopTimeout = setTimeout(() => {
+          stopAllAudio();
+          if (lbl) lbl.textContent = 'Stereo kanal testi tamamlandı ✓';
+        }, 2500);
+      }
+    }
+
+    function playClarityTone(hz, label) {
+      notifyNativeAdMob('clarity_test', String(hz));
+      const ctx = ensureAudioContext();
+      stopAllAudio();
+      showToast(label + ' çalınıyor...');
+      if (ctx) {
+        activeOsc = ctx.createOscillator();
+        activeGain = ctx.createGain();
+        activeOsc.type = 'sine';
+        activeOsc.frequency.setValueAtTime(hz, ctx.currentTime);
+        activeGain.gain.setValueAtTime(0.8, ctx.currentTime);
+        activeOsc.connect(activeGain);
+        activeGain.connect(ctx.destination);
+        activeOsc.start();
+        stopTimeout = setTimeout(() => {
+          stopAllAudio();
+          showToast(label + ' tamamlandı ✓');
+        }, 2500);
+      }
+    }
+
+    // =========================================================================
+    // TAB 4: GUIDE & HISTORY + COMPLETION MODAL
+    // =========================================================================
+    function renderCleanHistory() {
+      const box = document.getElementById('cleanHistoryList');
+      if (!box) return;
+      if (state.logs.length === 0) {
+        box.innerHTML = '<div class="py-6 text-center text-xs text-slate-400">Henüz kayıtlı temizlik işlemi yok.</div>';
+        return;
+      }
+      box.innerHTML = state.logs.map(item => `
+        <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 flex items-center justify-between text-xs">
+          <div>
+            <div class="font-bold">${item.mode}</div>
+            <div class="text-[11px] text-slate-400">${item.time}</div>
+          </div>
+          <span class="px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-500 font-bold text-[10px]">${item.status}</span>
+        </div>
+      `).join('');
+    }
+
+    function clearCleaningLogs() {
+      notifyNativeAdMob('clear_logs', 'clear');
+      state.logs = [];
+      renderCleanHistory();
+      showToast('Temizlik geçmişi sıfırlandı');
+    }
+
+    function openCompleteModal() {
+      const m = document.getElementById('modalCycleComplete');
+      if (m) m.classList.remove('hidden');
+    }
+
+    function closeCompleteModal() {
+      const m = document.getElementById('modalCycleComplete');
+      if (m) m.classList.add('hidden');
+    }
+
+    function closeCompleteAndGoTest() {
+      closeCompleteModal();
+      switchTab('test');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderWaveCanvasLoop();
+      renderCleanHistory();
+    });
+  </script>
+</body>
+</html>
