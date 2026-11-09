@@ -1,0 +1,32 @@
+name: APK ve AAB Olustur
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: ZIP Yuklendiyse Otomatik Ac
+        run: |
+          if ls *.zip 1> /dev/null 2>&1; then
+            unzip -o *.zip
+          fi
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.7'
+      - name: APK ve AAB Derle
+        run: gradle assembleRelease bundleRelease --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: WaveClean-Imzali-APK
+          path: app/build/outputs/apk/release/*.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: WaveClean-GooglePlay-AAB
+          path: app/build/outputs/bundle/release/*.aab
