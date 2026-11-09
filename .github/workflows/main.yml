@@ -1,15 +1,13 @@
-name: Otomatik İmzalı APK ve Google Play AAB Derleyici
-
+name: Otomatik APK ve AAB Olustur
 on:
   push:
-    branches: [ "main", "master" ]
   workflow_dispatch:
 
 jobs:
-  build-android:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Proje Kodlarını Çek
+      - name: Depoyu Cek
         uses: actions/checkout@v4
 
       - name: JDK 17 Kur
@@ -18,23 +16,101 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Gradle Kur
+      - name: Gradle 8.7 Kur
         uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: '8.7'
 
-      - name: İmzalı APK ve Google Play AAB Derle
+      - name: Eksik Klasorleri ve AdMob Projesini Otomatik Kur
         run: |
-          gradle assembleRelease bundleRelease --no-daemon
+          for z in *.zip; do
+            if [ -f "$z" ]; then unzip -o "$z"; fi
+          done
 
-      - name: İmzalı APK Dosyasını İndirilebilir Paket Yap
-        uses: actions/upload-artifact@v4
-        with:
-          name: WaveClean-Imzali-APK
-          path: app/build/outputs/apk/release/*.apk
+          mkdir -p app/src/main/assets
+          mkdir -p app/src/main/java/com/waveclean/pro
+          mkdir -p app/src/main/res/layout
+          mkdir -p app/src/main/res/values
 
-      - name: Google Play AAB Dosyasını İndirilebilir Paket Yap
-        uses: actions/upload-artifact@v4
-        with:
-          name: WaveClean-GooglePlay-AAB
-          path: app/build/outputs/bundle/release/*.aab
+          cat << 'EOF' > settings.gradle.kts
+          pluginManagement {
+              repositories {
+                  google()
+                  mavenCentral()
+                  gradlePluginPortal()
+              }
+          }
+          dependencyResolutionManagement {
+              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+          }
+          rootProject.name = "WaveCleanPro"
+          include(":app")
+          EOF
+
+          cat << 'EOF' > build.gradle.kts
+          plugins {
+              id("com.android.application") version "8.5.2" apply false
+              id("org.jetbrains.kotlin.android") version "1.9.24" apply false
+          }
+          EOF
+
+          cat << 'EOF' > gradle.properties
+          org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+          android.useAndroidX=true
+          kotlin.code.style=official
+          android.nonTransitiveRClass=true
+          EOF
+
+          if [ ! -f app/waveclean-release-key.jks ]; then
+            keytool -genkeypair -v -keystore app/waveclean-release-key.jks \
+              -keyalg RSA -keysize 2048 -validity 10000 -alias waveclean \
+              -storepass "WaveClean2026!" -keypass "WaveClean2026!" \
+              -dname "CN=WaveClean, OU=Mobile, O=WaveClean, L=Gaziantep, ST=Gaziantep, C=TR"
+          fi
+
+          cat << 'EOF' > app/build.gradle.kts
+          plugins {
+              id("com.android.application")
+              id("org.jetbrains.kotlin.android")
+          }
+          android {
+              namespace = "com.waveclean.pro"
+              compileSdk = 34
+              defaultConfig {
+                  applicationId = "com.waveclean.pro"
+                  minSdk = 23
+                  targetSdk = 34
+                  versionCode = 1
+                  versionName = "1.0.0"
+              }
+              signingConfigs {
+                  create("release") {
+                      storeFile = file("waveclean-release-key.jks")
+                      storePassword = "WaveClean2026!"
+                      keyAlias = "waveclean"
+                      keyPassword = "WaveClean2026!"
+                  }
+              }
+              buildTypes {
+                  release {
+                      isMinifyEnabled = false
+                      signingConfig = signingConfigs.getByName("release")
+                  }
+              }
+              compileOptions {
+                  sourceCompatibility = JavaVersion.VERSION_17
+                  targetCompatibility = JavaVersion.VERSION_17
+              }
+              kotlinOptions {
+                  jvmTarget = "17"
+              }
+          }
+          dependencies {
+              implementation("androidx.core:core-ktx:1.13.1")
+              implementation("androidx.appcompat:appcompat:1.7.0")
+              implementation("com.google.android.material:material:1.12.0")
+              implementation("
